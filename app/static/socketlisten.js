@@ -27,3 +27,11 @@ socket.on("room chat", (data) => {
   node.classList.add("chat");
   $roomChatMessages.appendChild(node);
 });
+
+socket.on("joined room", (data) => {
+  console.log(`joined room ${data.room}`);
+});
+
+socket.on("left room", (data) => {
+  console.log(`left room ${data.room}`);
+});

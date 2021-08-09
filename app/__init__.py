@@ -5,8 +5,6 @@ from flask import Flask, render_template, request
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
 
 app = Flask(__name__)
-app.config["ENV"] = "development"
-app.config["SECRET_KEY"] = "secret"
 
 
 @app.route("/")
@@ -36,7 +34,7 @@ def handle_queue(username):
 
 @socketio.on("connected")
 def handle_connected(data):
-    data["message"] = "ONLINE";
+    data["message"] = "ONLINE"
     send(data, broadcast=True)
 
 
@@ -60,6 +58,11 @@ def on_join(data):
     # send() used for unnamed events
     # unnamed events will be handled by "messsage" on client-side
     data["message"] = "JOINED"
+
+    # notify user of successful join
+    emit("joined room", data)
+
+    # notify room that a new user has joined
     emit("room chat", data, to=room)
 
 
@@ -68,4 +71,9 @@ def on_leave(data):
     room = data["room"]
     leave_room(room)
     data["message"] = "LEFT"
+
+    # notify user of successful exit
+    emit("left room", data)
+
+    # notify room that a user has left
     emit("room chat", data, to=room)
