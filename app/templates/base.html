@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title></title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <section class="p-5 d-flex justify-content-center">
+      <div>
+        <h1>Socket ID</h1>
+        <div id="socket-id"></div>
+
+        <h3>Choose username and room:</h3>
+        <label for="input-username">Username</label>
+        <input type="text" id="input-username" />
+        <label for="input-room">Room</label>
+        <input type="text" id="input-room" />
+
+        <h3>Connected status:</h3>
+        <div id="status"></div>
+
+        <h3>Room status:</h3>
+        <div id="current-room"></div>
+        <button id="btn-join-room">Join Room</button>
+        <button id="btn-leave-room">Leave Room</button>
+
+        <h3>Server messages:</h3>
+        <div>
+          <ul id="server-messages"></ul>
+        </div>
+
+        <h3>General Chatroom:</h3>
+        <div>
+          <ul id="general-chat-messages"></ul>
+          <input type="text" id="input-general-chat" />
+          <button id="btn-send-general-chat">Send</button>
+        </div>
+
+        <h3>Room Chatroom:</h3>
+        <div>
+          <ul id="room-chat-messages"></ul>
+          <input type="text" id="input-room-chat" />
+          <button id="btn-send-room-chat">Send</button>
+        </div>
+      </div>
+    </section>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
+      integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <script type="text/javascript" src="/static/definitions.js"></script>
+    <script type="text/javascript" src="/static/functions.js"></script>
+    <script type="text/javascript" src="/static/socketlisten.js"></script>
+    <script type="text/javascript" src="/static/buttonlisten.js"></script>
+    <script type="text/javascript" src="/static/init.js"></script>
+  </body>
+</html>
