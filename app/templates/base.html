@@ -13,28 +13,11 @@
   <body>
     <section class="p-5 d-flex justify-content-center">
       <div>
-        <h1>Socket ID</h1>
-        <div id="socket-id"></div>
-
-        <h3>Choose username and room:</h3>
-        <label for="input-username">Username</label>
-        <input type="text" id="input-username" />
-        <label for="input-room">Room</label>
-        <input type="text" id="input-room" />
-
-        <h3>Connected status:</h3>
+        <h3>Status:</h3>
         <div id="status"></div>
 
-        <h3>Room status:</h3>
-        <div id="current-room"></div>
-        <button id="btn-join-room">Join Room</button>
-        <button id="btn-leave-room">Leave Room</button>
-        <button id="btn-queue">Queue</button>
-        <button id="btn-get-rooms">Get Rooms</button>
-
-        <h3>Server messages:</h3>
-        <div>
-          <ul id="server-messages"></ul>
+        <div class="my-2">
+          <button id="btn-queue">Queue</button>
         </div>
 
         <h3>General Chatroom:</h3>
@@ -44,11 +27,18 @@
           <button id="btn-send-general-chat">Send</button>
         </div>
 
+        <h3>Current Room:</h3>
+        <div id="current-room">null</div>
+
+        <h3>Opponent:</h3>
+        <div id="opponent">null</div>
+
         <h3>Room Chatroom:</h3>
         <div>
           <ul id="room-chat-messages"></ul>
           <input type="text" id="input-room-chat" />
           <button id="btn-send-room-chat">Send</button>
+          <button id="btn-leave-room">LEAVE ROOM</button>
         </div>
       </div>
     </section>

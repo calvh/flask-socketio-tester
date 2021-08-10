@@ -1,16 +1,19 @@
 "use strict";
 
 socket.on("connect", () => {
-  $status.textContent = "connected";
-  $socketId.textContent = socket.id;
-  const username = getUsername() ? getUsername() : "anonymous";
-  socket.emit("connected", { username });
+  $status.textContent = "CONNECTED";
+});
+
+socket.on("status change", (data) => {
+  $status.textContent = data.status;
 });
 
 socket.on("disconnect", () => {
   $status.textContent = "disconnected";
-  $socketId.textContent = "null";
   $currentRoom.textContent = "null";
+  $opponent.textContent = "null";
+  room = null;
+  opponent = null;
 });
 
 // messages sent by unnamed events
@@ -21,13 +24,6 @@ socket.on("message", (data) => {
   $generalChatMessages.appendChild(node);
 });
 
-socket.on("room notification", (notification) => {
-  const node = document.createElement("li");
-  node.textContent = notification;
-  node.classList.add("notification");
-  $roomChatMessages.appendChild(node);
-});
-
 socket.on("room chat", (data) => {
   const node = document.createElement("li");
   node.textContent = `${data.username}: ${data.message}`;
@@ -35,15 +31,27 @@ socket.on("room chat", (data) => {
   $roomChatMessages.appendChild(node);
 });
 
+socket.on("general notification", (notification) => {
+  const node = document.createElement("li");
+  node.textContent = notification;
+  node.classList.add("notification");
+  $generalChatMessages.appendChild(node);
+});
+
+socket.on("room notification", (notification) => {
+  const node = document.createElement("li");
+  node.textContent = notification;
+  node.classList.add("notification");
+  $roomChatMessages.appendChild(node);
+});
+
 socket.on("user notification", (data) => {
   console.log(data);
 });
 
-socket.on("get rooms", (data) => {
-  console.log(data);
-});
-
-socket.on("joined room", (data)=>{
-    room = data.rooom
-    opponent = data.opponent
+socket.on("joined room", (data) => {
+  room = data.room;
+  opponent = data.opponent;
+  $currentRoom.textContent = room;
+  $opponent.textContent = opponent;
 });

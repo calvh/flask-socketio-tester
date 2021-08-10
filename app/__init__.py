@@ -22,20 +22,40 @@ socketio = SocketIO(
 # keep track of connected clients for reference in queue
 clients = set()
 
-
-queue = deque()
 # use queue to push clients into rooms
-# add to queue
-# trigger dequeuing
+queue = deque()
+
+
+@socketio.on("connect")
+def handle_connect(auth):
+    sid = request.sid
+
+    # TODO confirm that this works for logged in users
+    username = session.get("username", sid)
+
+    emit("general notification", f"{username} CONNECTED", broadcast=True)
+
+    clients.add(sid)
+
+
+@socketio.on("disconnect")
+def handle_disconnect():
+    sid = request.sid
+    clients.remove(sid)
+
+    for room in rooms():
+        emit("room notification", f"{sid} DISCONNECTED", to=room)
+
+
 @socketio.on("queue")
 def handle_queue():
-
     sid = request.sid
 
     # prevent duplicate queuing
-    if sid not in queue:
-        queue.append(sid)
+    if len(rooms()) > 1:
+        return emit("user notification", "Already in a room!")
 
+    queue.append(sid)
     players = set()
 
     while len(players) < 2:
@@ -48,7 +68,14 @@ def handle_queue():
     if len(players) < 2:
         last = players.pop()
         queue.append(last)
-        return emit("user notification", "Failed to find a match", to=last)
+        emit(
+            "status change",
+            {"status": "Waiting for players to join..."},
+            to=last,
+        )
+        return emit(
+            "user notification", "Waiting for players to join...", to=last
+        )
 
     # match found
     player1 = players.pop()
@@ -56,38 +83,31 @@ def handle_queue():
 
     room_id = uuid.uuid4().hex
 
-    # check for collision with existing socket ids
     # TODO investigate if this is necessary
+    # check for collision with existing socket ids
     while room_id in clients:
         room_id = uuid.uuid4().hex
 
     join_room(room_id, sid=player1)
     join_room(room_id, sid=player2)
+
+    emit("status change", {"status": f"In game with {player2}"}, to=player1)
+    emit("status change", {"status": f"In game with {player1}"}, to=player2)
+
+    emit("room notification", f"{player1} JOINED", to=room_id)
+    emit("room notification", f"{player2} JOINED", to=room_id)
+
     emit("user notification", f"Joined room {room_id}", to=player1)
     emit("user notification", f"Joined room {room_id}", to=player2)
     emit("joined room", {"room": room_id, "opponent": player2}, to=player1)
     emit("joined room", {"room": room_id, "opponent": player1}, to=player2)
-    emit("room notification", f"{player1} vs {player2}!", to=room_id)
-
-
-@socketio.on("connected")
-def handle_connected(data):
-
-    data["message"] = "ONLINE"
-
-    # unnamed events will be handled by "messsage" on client-side
-    send(data, broadcast=True)
-
-    # could use request.sid or request.sid
-    sid = request.sid
-    clients.add(sid)
-
-    # TODO for registered users can use username from session
-    # ensure login method writes username to session cookie
 
 
 @socketio.on("general chat")
 def handle_general_chat(data):
+    sid = request.sid
+    username = session.get("username", sid)
+    data["username"] = username
     send(data, broadcast=True)
 
 
@@ -96,35 +116,13 @@ def handle_room_chat(data):
     # send named event so frontend can handle separately from general messages
     # check if client is in room
     if data["room"] in rooms():
+        sid = request.sid
+        username = session.get("username", sid)
+        data["username"] = username
         emit("room chat", data, to=data["room"])
 
 
-@socketio.on("get rooms")
-def handle_get_rooms(data):
-    emit("get rooms", {"rooms": rooms()})
-
-
-@socketio.on("disconnect")
-def handle_disconnect():
-    print(f"{request.sid} disconnected")
-    clients.remove(request.sid)
-
-
-@socketio.on("join")
-def on_join(data):
-
-    sid = request.sid
-    room = data["room"]
-
-    join_room(room)
-
-    # notify user of successful join
-    emit("user notification", f"Joined {room}")
-
-    # notify room that a new user has joined
-    emit("room notification", f"{sid} JOINED", to=room)
-
-
+# leave room
 @socketio.on("leave")
 def on_leave(data):
 
@@ -134,6 +132,7 @@ def on_leave(data):
 
     # notify user of successful exit
     emit("user notification", f"Left {room}")
+    emit("status change", {"status": "CONNECTED"})
 
     # notify room that a user has left
     emit("room notification", f"{sid} LEFT", to=room)

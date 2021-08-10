@@ -2,18 +2,12 @@
 
 const $socketId = document.querySelector("#socket-id");
 
-const $inputUsername = document.querySelector("#input-username");
-const $inputRoom = document.querySelector("#input-room");
-
 const $status = document.querySelector("#status");
 
 const $currentRoom = document.querySelector("#current-room");
-const $btnJoinRoom = document.querySelector("#btn-join-room");
+const $opponent = document.querySelector("#opponent");
 const $btnLeaveRoom = document.querySelector("#btn-leave-room");
 const $btnQueue = document.querySelector("#btn-queue");
-const $btnGetRooms = document.querySelector("#btn-get-rooms");
-
-const $serverMessages = document.querySelector("#server-messages");
 
 const $generalChatMessages = document.querySelector("#general-chat-messages");
 const $inputGeneralChat = document.querySelector("#input-general-chat");
