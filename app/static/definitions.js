@@ -10,6 +10,8 @@ const $status = document.querySelector("#status");
 const $currentRoom = document.querySelector("#current-room");
 const $btnJoinRoom = document.querySelector("#btn-join-room");
 const $btnLeaveRoom = document.querySelector("#btn-leave-room");
+const $btnQueue = document.querySelector("#btn-queue");
+const $btnGetRooms = document.querySelector("#btn-get-rooms");
 
 const $serverMessages = document.querySelector("#server-messages");
 
@@ -21,7 +23,7 @@ const $roomChatMessages = document.querySelector("#room-chat-messages");
 const $inputRoomChat = document.querySelector("#input-room-chat");
 const $btnSendRoomChat = document.querySelector("#btn-send-room-chat");
 
-const socket = io();
+let room = null;
+let opponent = null;
 
-// todo: list joined rooms
-const joinedRooms = new Set();
+const socket = io();

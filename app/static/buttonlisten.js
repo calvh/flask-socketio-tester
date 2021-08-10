@@ -2,12 +2,23 @@
 
 $btnJoinRoom.addEventListener("click", (event) => {
   event.preventDefault();
-  joinRoom(getRoom());
+  // joinRoom(getRoom());
 });
 
 $btnLeaveRoom.addEventListener("click", (event) => {
   event.preventDefault();
   leaveRoom(getRoom());
+});
+
+$btnQueue.addEventListener("click", (event) => {
+  event.preventDefault();
+  socket.emit("queue");
+});
+
+$btnGetRooms.addEventListener("click", (event) => {
+  event.preventDefault();
+  const username = getUsername() ? getUsername() : "anonymous";
+  socket.emit("get rooms", { username });
 });
 
 $btnSendGeneralChat.addEventListener("click", (event) => {

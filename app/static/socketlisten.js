@@ -21,6 +21,13 @@ socket.on("message", (data) => {
   $generalChatMessages.appendChild(node);
 });
 
+socket.on("room notification", (notification) => {
+  const node = document.createElement("li");
+  node.textContent = notification;
+  node.classList.add("notification");
+  $roomChatMessages.appendChild(node);
+});
+
 socket.on("room chat", (data) => {
   const node = document.createElement("li");
   node.textContent = `${data.username}: ${data.message}`;
@@ -28,10 +35,15 @@ socket.on("room chat", (data) => {
   $roomChatMessages.appendChild(node);
 });
 
-socket.on("joined room", (data) => {
-  console.log(`joined room ${data.room}`);
+socket.on("user notification", (data) => {
+  console.log(data);
 });
 
-socket.on("left room", (data) => {
-  console.log(`left room ${data.room}`);
+socket.on("get rooms", (data) => {
+  console.log(data);
+});
+
+socket.on("joined room", (data)=>{
+    room = data.rooom
+    opponent = data.opponent
 });
